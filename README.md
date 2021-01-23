@@ -1,172 +1,59 @@
-Example Project
-===============
+# Easy AirSim Installation
 
-This contains a simple ROS catkin package meant to demonstrate the pipeline for
-testing and getting results for Shell Eco-marathon simulation projects.
+This repository contains utilities for simplifying the installation of AirSim
+and Unreal Engine. Please follow the following instructions to setup up your
+computer with the simulation environment.
 
-Requirements
-------------
+## Prerequisites
+This assumes your computer is running Ubuntu 18.04. It is also possible to run
+this script inside of a virtual machine, such as a VMWare or VirtualBox image.
+It has been tested using VMWare Workstation 15.5 running an Ubuntu 18.04 image.
 
-The software requires [Ubuntu Linux 18.04](https://ubuntu.com/download/desktop) and
-[ROS Melodic](http://wiki.ros.org/melodic) to build and run.
+The installation procedure assumes that ROS, Unreal Engine, and AirSim are not
+installed. It does simple checks to avoid overwriting existing installations,
+ but users should be cautious.
 
-Important considerations:
-* Project submissions are compiled in a fresh Ubuntu Linux 18.04 / ROS Melodic
-  environment.
-* Any software dependencies must be defined properly in the
-  [catkin package manifest](http://wiki.ros.org/catkin/package.xml) and will be
-  installed at build time by [rosdep](http://wiki.ros.org/rosdep).
-* All ROS packages must [install](http://wiki.ros.org/catkin/CMakeLists.txt#Optional_Step:_Specifying_Installable_Targets)
-  themselves when built; the source code will not be present in the simulation
-  environment, only installed targets.
-* All project submissions **must** have a package named `shell_simulation` with a
-  launch file named `shell_simulation.launch` that requires no parameters or arguments
-  in order to run; this is used as the entry point for launching the project.
-* Uploaded projects *must* be named `project.zip` and contain only the source
-  code of ROS packages.
-* The simulation will automatically end after either all goals have been reached
-or after it has been running for 10 minutes.
+Please note that the simulation is very resource intensive, and ideally will
+have a fast CPU, at least 16GB of RAM, and GPU acceleration, even if running
+inside a virtual machine. This installation procedure was tested on a
+workstation with an AMD 3600x, 32GB of memory, and an Nvidia 1080Ti GPU. The
+installation script was tested in a virtual machine with 6 virtual processor
+cores, 16GB of memory, and 3GB of video memory. Please note that building
+Unreal with this script will use 4 parallel jobs, and consume almost 16GB of
+memory. After building the software, approximately 115GB of disk space are
+used.
 
-There are currently nineteen goal points defined with the following X/Y/Z coordinates:
-```
-[ 
-  [-87.0, 1.5, 0.0],
-  [-213.0, -47.0, 0.0],
-  [-213.0, -120.0, 0.0],
-  [-94.0, -130.0, 0.0],
-  [-81.7, -8.3, 0.0],
-  [34.5, -2.6, 0.0],
-  [-199.7, -254.0, 0.0],
-  [-209.3, -8.1, 0.0],
-  [-93.5, -2.0, 0.0],
-  [-86.0, -119.4, 0.0],
-  [33.7, -129.4, 0.0],
-  [45.9, -9.8, 0.0],
-  [-64.5, 1.8, 0.0],
-  [-86.3, -37.3, 0.0],
-  [-204.2, -45.8, 0.0],
-  [-213.0, -60.0, 0.0],
-  [-86.3, -139.2, 0.0],
-  [-86.4, -248.2, 0.0],
-  [-33.2, -240.4, 0.0]
-]
+## GitHub Signup
+AirSim uses Unreal Engine, which requires a GitHub account and access to the
+Epic Games team to install. These are all free accounts, but it may take several
+days to be approved for the Epic Games account.
+
+First, go to [GitHub](https://www.github.com) and register for an account.
+Adding an SSH key to your account is not necessary, but will make cloning
+repositories easier. To add an SSH key to your GitHub account, you can follow
+the procedure [here](https://help.github.com/en/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
+
+Unreal Engine is publicly accessible, but you must request access to the Epic
+Games source code first. After signing up for GitHub, follow the instructions
+located [here](https://www.unrealengine.com/en-US/ue4-on-github) to gain accesss
+to the Unreal Engine repository.
+
+## Installation
+Once you have a GitHub account and are part of the Unreal Engine group, the
+```setup.sh``` script located in this repository will install ROS Melodic, 
+Unreal Engine, AirSim, and the Neighborhood environment. Simply clone this
+repository or download the script, and from the Linux terminal, run the
+following commmand
+
+```bash
+bash setup.sh
 ```
 
-The first goal point is directly in front of the vehicle, so simply increasing the
-throttle is enough to reach it.
+The script will then go through the installation process, prompting you for
+your user name and possibly GitHub credentials at several points. Note that the
+build process will take a very long time, possibly several hours.
 
-Usage
------
-
-The following ROS topics are available within the simulation:
-
-```
-Published topics:
- * /airsim_node/origin_geo_point [airsim_car_ros_pkgs/GPSYaw]
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/collision_count [std_msgs/Int32]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/imu/Imu [sensor_msgs/Imu]
- * /airsim_node/PhysXCar/left_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/left_fisheye/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/lidar/SICK [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_1 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_2 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_3 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/right_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/right_fisheye/Scene [sensor_msgs/Image]
- * /odom [nav_msgs/Odometry]
- * /rosout_agg [rosgraph_msgs/Log]
- * /rosout [rosgraph_msgs/Log]s
- * /tf_static [tf2_msgs/TFMessage]
- * /tf [tf2_msgs/TFMessage]
-
-Subscribed topics:
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/collision_count [std_msgs/Int32]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/imu/Imu [sensor_msgs/Imu]
- * /airsim_node/PhysXCar/left_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/left_fisheye/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/lidar/SICK [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_1 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_2 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_3 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/right_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/right_fisheye/Scene [sensor_msgs/Image]
- * /brake_command [std_msgs/Float64]
- * /gear_command [std_msgs/String]
- * /handbrake_command [std_msgs/Bool]
- * /odom [nav_msgs/Odometry]
- * /rosout_agg [rosgraph_msgs/Log]
- * /rosout [rosgraph_msgs/Log]s
- * /steering_command [std_msgs/Float64]
- * /tf_static [tf2_msgs/TFMessage]
- * /tf [tf2_msgs/TFMessage]
- * /throttle_command [std_msgs/Float64]
-```
-
-These topics have data from sensors that can be used to observe the environment:
-
-```
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/back_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_left_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_middle_bumblebee/DepthPlanner [sensor_msgs/Image]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/front_right_bumblebee/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/imu/Imu [sensor_msgs/Imu]
- * /airsim_node/PhysXCar/left_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/left_fisheye/Scene [sensor_msgs/Image]
- * /airsim_node/PhysXCar/lidar/SICK [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/lidar/VLP16_1 [sensor_msgs/PointCloud2]
- * /airsim_node/PhysXCar/right_fisheye/Scene/camera_info [sensor_msgs/CameraInfo]
- * /airsim_node/PhysXCar/right_fisheye/Scene [sensor_msgs/Image]
-```
-
-And messages can be published to this topic to control the vehicle:
-
-```
- * /brake_command [std_msgs/Float64]
-   Valid values range from 0.0 (no brake) to 1.0 (full brake)
- * /gear_command [std_msgs/String]
-   Valid values are "forward" or "reverse"
- * /handbrake_command [std_msgs/Bool]
-   If set to "true", throttle will be ignored
- * /steering_command [std_msgs/Float64]
-   Valid values range from -1.0 (full left) to 1.0 (full right)
- * /throttle_command [std_msgs/Float64]
-   Valid values range from 0.0 (no throttle) to 1.0 (full throttle)
-```
+## Post Installation
+This script will build an example ROS node inside the ${HOME}/src/AirSim/ros
+workspace that contains an example of subscribing to various sensor nodes
+and publishing commands to a ground vehicle.
